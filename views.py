@@ -1,8 +1,9 @@
 import os
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from marshmallow import ValidationError
 from request_model import RequestSchema, BatchRequestSchema
 from request import Request
+from typing import Union, Tuple
 
 main_bp =Blueprint('main', __name__)
 
@@ -10,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 
 @main_bp.route("/perform_query", methods=['POST'])
-def perform_query():
+def perform_query() -> Union[Response, Tuple[Response, int]]:
     data = request.json
     try:
         validated_data = RequestSchema().load(data)
@@ -33,27 +34,7 @@ def perform_query():
 
 @main_bp.route("/perform_query_extended", methods=['POST'])
 def perform_query_extended():
-    """
-    В тело запроса передается словарь вида
-    {
-    "commands": [
-        {
-            "cmd": "unique",
-            "value": ""
-        },
-        {
-            "cmd": "filter",
-            "value": "GET"
-        },
-        {
-            "cmd": "sort",
-            "value": "desc"
-        }
-    ],
-    "file_name": "data/apache_logs.txt"
-}
-    количество словарей с командами не ограничено
-    """
+
     data = request.json
     try:
         validated_data = BatchRequestSchema().load(data)
@@ -62,7 +43,6 @@ def perform_query_extended():
 
     query = Request(validated_data)
 
-    result = None
     for command in query.query_data['commands']:
         query.build_query(
             cmd=command['cmd'],
