@@ -10,7 +10,5 @@ jobs:
         run: docker build -t ${{ secrets.IMAGE_TAG }}:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
       - name: login
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: image push
-        run: docker image push ${{ secrets.IMAGE_TAG }}:$GITHUB_REF_NAME-$GITHUB_RUN_ID
       - name: push
         run: docker push ${{ secrets.IMAGE_TAG }}:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
