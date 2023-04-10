@@ -4,6 +4,8 @@ from marshmallow import ValidationError
 from request_model import RequestSchema, BatchRequestSchema
 from request import Request
 from typing import Union, Tuple
+from db import db
+from sqlalchemy import text
 
 main_bp =Blueprint('main', __name__)
 
@@ -50,3 +52,22 @@ def perform_query_extended():
         )
 
     return jsonify(query.file_data)
+
+
+@main_bp.route("/ping", methods=['GET'])
+def ping():
+    return 'pong'
+
+
+@main_bp.route("/test_db", methods=['GET'])
+def test_db():
+    result = db.session.execute(
+        text(
+            'SELECT 1'
+        )
+    ).scalar()
+    return jsonify(
+        {
+            'result': result
+        }
+    )
