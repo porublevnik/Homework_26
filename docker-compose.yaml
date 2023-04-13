@@ -3,7 +3,6 @@ version: '3.3'
 services:
   web:
     build: .
-    image: porublevnik/skypro-hosting
     ports:
       - 25000:25000
     environment:
