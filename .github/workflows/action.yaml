@@ -27,7 +27,16 @@ jobs:
           export IMAGE_TAG=${{ secrets.IMAGE_TAG }}
           cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
       - name: copy files
-        uses: appleboy/ssр-action@master
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{secrets.SERVER_HOST}}
+          username: ${{secrets.SERVER_USER}}
+          password: ${{secrets.SERVER_PASSWORD}}
+          source: "deploy/docker-compose.yaml"
+          target: "deploy"
+          strip_components: 1
+      - name: run
+        uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.SERVER_HOST}}
           username: ${{secrets.SERVER_USER}}
