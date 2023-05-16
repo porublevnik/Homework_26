@@ -1,2 +1,6 @@
 /venv
 /.github
+.mypy_cache/
+.github/
+flask-app.service
+mypy.ini
